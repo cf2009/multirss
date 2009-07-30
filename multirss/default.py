@@ -9,7 +9,7 @@ if CWD[-1] != '\\': CWD = CWD + '\\'
 
 # RSS elements supported by RSSParser class
 channelElements	= ['title','link','description']
-itemElements = ['title','link','description','pubDate','media']
+itemElements = ['title','link','description','pubDate']
 
 # dialog object for the whole app
 dialog = xbmcgui.DialogProgress()
@@ -21,7 +21,6 @@ CONTROL_RSSITEM_LIST = 5051
 CONTROL_RSSITEM_DESC = 5005
 CONTROL_RSSITEM_TITLE = 5004
 CONTROL_RSSITEM_DATE = 5003
-#CONTROL_CATEGORIES_FEED = 5002
 
 class GUI(xbmcgui.WindowXML):
     def __init__(self, *args, **kwargs ):
@@ -87,18 +86,16 @@ class GUI(xbmcgui.WindowXML):
         self.updateRSSChannelTitle()
         self.updateRSSItemList()
         self.updateRSSItemInfo(0)
-        #self.updateRSScategories_feed()
 
     def updateRSSChannelTitle(self):
         title = self.parser.getChannelInfo().getElement("title")
         #self.rssChannelTitle.setLabel(title)
-
     
     def updateRSSItemList(self):
         self.getControl(CONTROL_RSSITEM_LIST).reset()
         items = self.parser.getItems()
         for item in items:
-            self.getControl( CONTROL_RSSITEM_LIST ).addItem(self.remove_extra_spaces(self.Clean_text(item.getElement("title"))))
+            self.getControl( CONTROL_RSSITEM_LIST ).addItem(self.remove_extra_spaces(item.getElement("title")))
         self.setFocus(self.getControl( CONTROL_RSSITEM_LIST ))
         
     def updateRSSItemInfo(self, position):
