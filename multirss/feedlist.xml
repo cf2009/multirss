@@ -1,0 +1,41 @@
+<!--
+Add Feeds Below
+Use current feeds as example.
+Order of input below does not matter... Feeds will be ordered alphabetically when listed.
+Except Categories will remain in the same order as set here.
+ -->
+<YaRSSr>
+	<category name="XBMC">
+		<feeds>
+			<feed link="http://xbmc.org/?wpmu-feed=posts">Developer Musings</feed>
+			<feed link="http://feeds.feedburner.com/xbmc">News</feed>
+			<feed link="http://xbmc.org/trac/log/?format=rss">Revision Log</feed>
+			<feed link="http://xbmc.org/trac/timeline?format=rss">Trac Timeline</feed>
+			<feed link="http://xbmc.org/forum/external.php?type=RSS2">Today's Posts</feed>
+		</feeds>
+	</category>
+	<category name="Technology News">
+		<feeds>
+			<feed link="http://digg.com/rss/index.xml">Digg</feed>
+			<feed link="http://www.wired.com/news/feeds/rss2/0,2610,,00.xml">Wired</feed>
+			<feed link="http://www.securityfocus.com/rss/news.xml">SecurityFocus</feed>
+			<feed link="http://www.tomshardware.com/hardnews/news.xml">Toms Hardware</feed>
+			<feed link="http://www.anandtech.com/rss/newsfeed.aspx">AnandTech</feed>
+			<feed link="http://www.theregister.co.uk/headlines.rss">The Register</feed>
+			<feed link="http://www.engadget.com/rss.xml">Engadget</feed>
+			<feed link="http://www.trustedreviews.com/TRNewsWire.aspx">Trusted Reviews</feed>
+			<feed link="http://www.ehomeupgrade.com/syndication.xml">eHome Upgrade</feed>
+			<feed link="http://rss.news.yahoo.com/rss/tech">Yahoo Tec News</feed>
+			<feed link="http://newsrss.bbc.co.uk/rss/newsonline_uk_edition/technology/rss.xml">BBC Technology</feed>
+		</feeds>	
+	</category>
+	<category name="World News">
+		<feeds>
+			<feed link="http://newsrss.bbc.co.uk/rss/newsonline_uk_edition/front_page/rss.xml">BBC News</feed>
+			<feed link="http://newsrss.bbc.co.uk/rss/newsonline_world_edition/americas/rss.xml">BBC Americas</feed>
+			<feed link="http://www.microsite.reuters.com/rss/worldNews">Reuters</feed>
+			<feed link="http://www.worldpress.org/feeds/worldpresswire.xml">World Press Wire</feed>
+			<feed link="http://www.worldpress.org/feeds/topstories.xml">World Press Top Stories</feed>
+		</feeds>	
+	</category>
+</YaRSSr>
