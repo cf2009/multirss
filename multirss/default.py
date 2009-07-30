@@ -1,5 +1,13 @@
 import xml.dom.minidom, urllib, os, os.path, xbmc, xbmcgui, string, traceback, time, re
 
+# script constants
+__script__ = "Multirss cf"
+__author__ = "CF2009,Affini(multirss 1.5)"
+__url__    = "http://github.com/cf2009/multirss/tree/master"
+__git_url__ = "git://github.com/cf2009/multirss.git"
+__date__    = "30-07-2009"
+__version__ = "0.9"
+
 ACTION_EXIT_SCRIPT = ( 9, 10, )
 
 # Current Working Directory
@@ -21,6 +29,7 @@ CONTROL_RSSITEM_LIST = 5051
 CONTROL_RSSITEM_DESC = 5005
 CONTROL_RSSITEM_TITLE = 5004
 CONTROL_RSSITEM_DATE = 5003
+CONTROL_VERSION_DATE = 5100
 CONTROL_BACKGROUND = 5010
 
 class GUI(xbmcgui.WindowXML):
@@ -35,12 +44,13 @@ class GUI(xbmcgui.WindowXML):
         self.feeds = None
 
     def onInit(self):
+        self.getControl( CONTROL_VERSION_DATE ).setLabel(__version__ + ' ' + __date__)
         self.updateCategoryList()
 
     def onAction(self, action):
         if ( action in ACTION_EXIT_SCRIPT ):
             self.exitScript()
-       
+
     def onControl(self, control):
         pass
 

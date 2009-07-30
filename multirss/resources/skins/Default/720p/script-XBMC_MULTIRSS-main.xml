@@ -7,6 +7,7 @@
 		<posy>0</posy>
 		<width>1280</width>
 		<height>720</height>
+		<fadetime>1000</fadetime>
 		<texture background="true" fallback="background.jpg" />
 		<animation effect="fade" start="0" end="100" time="500">WindowOpen</animation>
 		<animation effect="fade" start="100" end="0" time="200">WindowClose</animation>
@@ -85,10 +86,10 @@
 			<pulseonselect></pulseonselect>
 			<orientation>vertical</orientation>
 			<showonepage>false</showonepage>
-			<onup>60</onup>
-			<ondown>60</ondown>
-			<onleft>5051</onleft>
-			<onright>5052</onright>
+			<onup>61</onup>
+			<ondown>61</ondown>
+			<onleft>5053</onleft>
+			<onright>5051</onright>
 			<animation effect="fade" start="0" end="100" time="500">WindowOpen</animation>
 			<animation effect="fade" start="100" end="0" time="200">WindowClose</animation>
 		</control>
@@ -478,9 +479,6 @@
 			</focusedlayout>
 		</control>
 	</control>
-
-
-
 <!-- FEEDS -->
 	<control type="group">
 		<posx>0</posx>
@@ -557,7 +555,7 @@
 		</control>
 	</control>
 -->
-	<control type="label">
+	<control type="label" id="5100">
 		<animation effect="fade" start="100" end="0" time="500">WindowOpen</animation>
 		<animation effect="fade" start="0" end="100" time="200">WindowClose</animation>
 		<posx>1165</posx>
@@ -569,7 +567,6 @@
 		<angle>90</angle>
 		<font>font10</font>
 		<textcolor>68ffffff</textcolor>
-		<label>1.6.12 - 30/07/09</label>
 	</control>
 
 </controls>

@@ -1,4 +1,4 @@
 # .gitignore for multirss 
 
-# generated files 
 *.bak
+*.psd

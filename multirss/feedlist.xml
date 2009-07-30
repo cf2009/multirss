@@ -19,13 +19,12 @@ New Custom backgrounds for category see 1st category for example
 	<category name="Technology News">
 		<feeds>
 			<feed link="http://digg.com/rss/index.xml">Digg</feed>
-			<feed link="http://www.wired.com/news/feeds/rss2/0,2610,,00.xml">Wired</feed>
+			<feed link="http://feeds.wired.com/wired/index?format=xml">Wired</feed>
 			<feed link="http://www.securityfocus.com/rss/news.xml">SecurityFocus</feed>
 			<feed link="http://www.tomshardware.com/hardnews/news.xml">Toms Hardware</feed>
 			<feed link="http://www.anandtech.com/rss/newsfeed.aspx">AnandTech</feed>
 			<feed link="http://www.theregister.co.uk/headlines.rss">The Register</feed>
 			<feed link="http://www.engadget.com/rss.xml">Engadget</feed>
-			<feed link="http://www.trustedreviews.com/TRNewsWire.aspx">Trusted Reviews</feed>
 			<feed link="http://www.ehomeupgrade.com/syndication.xml">eHome Upgrade</feed>
 			<feed link="http://rss.news.yahoo.com/rss/tech">Yahoo Tec News</feed>
 			<feed link="http://newsrss.bbc.co.uk/rss/newsonline_uk_edition/technology/rss.xml">BBC Technology</feed>
