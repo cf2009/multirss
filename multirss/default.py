@@ -21,6 +21,7 @@ CONTROL_RSSITEM_LIST = 5051
 CONTROL_RSSITEM_DESC = 5005
 CONTROL_RSSITEM_TITLE = 5004
 CONTROL_RSSITEM_DATE = 5003
+CONTROL_BACKGROUND = 5010
 
 class GUI(xbmcgui.WindowXML):
     def __init__(self, *args, **kwargs ):
@@ -28,14 +29,14 @@ class GUI(xbmcgui.WindowXML):
         self.debug = ""
         # RSS parser
         self.parser = RSSParser()
-		
+
         # Feeds from feedlist file
         self.categories = FeedListLoader("%s\\%s" % (CWD,"feedlist.xml")).getCategoryList()
         self.feeds = None
 
     def onInit(self):
         self.updateCategoryList()
- 
+
     def onAction(self, action):
         if ( action in ACTION_EXIT_SCRIPT ):
             self.exitScript()
@@ -51,10 +52,10 @@ class GUI(xbmcgui.WindowXML):
             self.loadFeed()
         if(controlID == CONTROL_CATEGORIES_LIST):
             self.updateFeedList()
- 
+
     def onFocus(self, controlID):
         pass
-		
+
     def exitScript( self, restart=False ):
         self.close()
 
@@ -63,11 +64,12 @@ class GUI(xbmcgui.WindowXML):
             self.getControl( CONTROL_CATEGORIES_LIST ).addItem(category.getName())
         self.setFocus(self.getControl( CONTROL_CATEGORIES_LIST ))
         self.updateFeedList()
-		
+
     def updateFeedList(self):
         self.getControl(CONTROL_FEED_LIST).reset()
         pos = self.getControl(CONTROL_CATEGORIES_LIST).getSelectedPosition()
         self.feeds = self.categories[pos].getFeeds()
+        self.getControl(CONTROL_BACKGROUND).setImage(self.categories[pos].getBackground())
         self.feeds.sort(sort_feeds)
         for feed in self.feeds:
             self.getControl( CONTROL_FEED_LIST ).addItem(feed.getTitle())
@@ -81,7 +83,7 @@ class GUI(xbmcgui.WindowXML):
         self.parser.parse()
         self.updateGUIElements()
         dialog.close()
-		
+
     def updateGUIElements(self):
         self.updateRSSChannelTitle()
         self.updateRSSItemList()
@@ -112,6 +114,7 @@ class GUI(xbmcgui.WindowXML):
     def Clean_text(self, data):
         data = self.remove_html_tags(data)
         data = unescape(data)
+        data = self.decodeEntities(data)
         data = self.remove_newline(data)
         #data = self.remove_extra_spaces(data)
         return data
@@ -119,14 +122,23 @@ class GUI(xbmcgui.WindowXML):
     def remove_extra_spaces(self,data):
         p = re.compile(r'\s+')
         return p.sub(' ', data)
-		
+
     def remove_newline(self,data):
         return data.strip()
 
     def remove_html_tags(self,data):
         p = re.compile(r'<[^<]*?/?>')
         return p.sub(' ', data)
-		
+
+    def decodeEntities(self,data):
+        data = data or ''
+        data = data.replace('&lt;', '<')
+        data = data.replace('&gt;', '>')
+        data = data.replace('&quot;', '"')
+        data = data.replace('&apos;', "'")
+        data = data.replace('&amp;', '&')
+        return data
+
 def unescape(text):
    """Removes HTML or XML character references 
       and entities from a text string.
@@ -166,7 +178,7 @@ def unescape(text):
             pass
       return text # leave as is
    return re.sub("&#?\w+;", fixup, text)
-	
+
 class RSSChannelInfo:
 	def __init__(self, info):
 		# dictionary that includes channel elements
@@ -203,7 +215,7 @@ class RSSParser:
 		self.channelInfo = None
 		# RSS items
 		self.items = {}
-	
+
 	# feeds the xml document from given url to the parser
 	def feed(self, url):
 		self.dom = None
@@ -213,12 +225,12 @@ class RSSParser:
 		xmlDocument = f.read()
 		f.close()
 		self.dom = xml.dom.minidom.parseString(xmlDocument)
-	
+
 	# parses the RSS document, for now it assumes that RSS document is valid
 	def parse(self):
 		self.channelInfo = self.__parseChannelInfo()
 		self.items = self.__parseItems()
-	
+
 	# parses channel info and returns RSSChannelInfo object containing the info
 	def __parseChannelInfo(self):
 		channel = self.dom.getElementsByTagName("channel")[0]
@@ -229,7 +241,7 @@ class RSSParser:
 			except IndexError:
 				pass
 		return RSSChannelInfo(info)
-	
+
 	# parses RSS document items and returns an list containing RSSItem objects
 	def __parseItems(self):
 		items = self.dom.getElementsByTagName("item")
@@ -243,35 +255,38 @@ class RSSParser:
 					pass
 			itemObjects.append(RSSItem(elements))
 		return itemObjects
-	
+
 	# returns the channelinfo on this parser
 	def getChannelInfo(self):
 		return self.channelInfo
-	
+
 	# returns items from this parser
 	def getItems(self):
 		return self.items
-		
+
 class RSSCategory:
-	def __init__(self, name, feeds):
+	def __init__(self, name, feeds, background):
 		self.name = name
 		self.feeds	= feeds
-	
+		self.background	= background
+
 	def getName(self):
 		return self.name
-		
+
 	def getFeeds(self):
 		return self.feeds
 
+	def getBackground(self):
+		return self.background
 
 class RSSFeed:
 	def __init__(self, title, link):
 		self.title	= title
 		self.link = link
-		
+
 	def getTitle(self):
 		return self.title
-	
+
 	def getLink(self):
 		return self.link
 
@@ -282,7 +297,7 @@ class FeedListLoader:
 		self.categoryList = []
 		self.loadList()
 		self.parseList()
-	
+
 	def loadList(self):
 		try:
 			f = open(self.listFile)
@@ -291,18 +306,22 @@ class FeedListLoader:
 		fl = f.read()
 		f.close()
 		self.listXML = xml.dom.minidom.parseString(fl)
-		
+
 	def parseList(self):
-		categories = self.listXML.getElementsByTagName("category")
+		categories = self.listXML.getElementsByTagName('category')
 		for category in categories:
 			feedList = []
 			name = category.attributes [ 'name' ].nodeValue
-			feeds = category.getElementsByTagName("feed")
+			if(category.hasAttribute('background')):
+				background = category.attributes [ 'background' ].nodeValue
+			else:
+				background = 'background.jpg'
+			feeds = category.getElementsByTagName('feed')
 			for feed in feeds:
 				title = feed.childNodes [ 0 ].nodeValue
 				link = feed.attributes [ 'link' ].nodeValue
 				feedList.append(RSSFeed(title, link))
-			self.categoryList.append(RSSCategory(name, feedList))
+			self.categoryList.append(RSSCategory(name, feedList, background))
 
 	def getCategoryList(self):
 		return self.categoryList

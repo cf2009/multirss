@@ -3,9 +3,11 @@ Add Feeds Below
 Use current feeds as example.
 Order of input below does not matter... Feeds will be ordered alphabetically when listed.
 Except Categories will remain in the same order as set here.
+
+New Custom backgrounds for category see 1st category for example
  -->
 <YaRSSr>
-	<category name="XBMC">
+	<category name="XBMC" background="background.jpg">
 		<feeds>
 			<feed link="http://xbmc.org/?wpmu-feed=posts">Developer Musings</feed>
 			<feed link="http://feeds.feedburner.com/xbmc">News</feed>

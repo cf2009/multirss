@@ -1,14 +1,13 @@
 <window>
 <defaultcontrol always="true">5051</defaultcontrol>
 <controls>
-
-	<control type="image">
+	<control type="image" id="5010">
 		<description>background image</description>
 		<posx>0</posx>
 		<posy>0</posy>
 		<width>1280</width>
 		<height>720</height>
-		<texture>background.jpg</texture>
+		<texture background="true" fallback="background.jpg" />
 		<animation effect="fade" start="0" end="100" time="500">WindowOpen</animation>
 		<animation effect="fade" start="100" end="0" time="200">WindowClose</animation>
 	</control>
