@@ -1,4 +1,4 @@
-import xml.dom.minidom, urllib, os, os.path, xbmc, xbmcgui, string, traceback, time, re
+import xml.dom.minidom, urllib, os, os.path, xbmc, xbmcgui, string, traceback, time, re, htmlentitydefs
 
 # script constants
 __script__ = "Multirss cf"
