@@ -5,7 +5,7 @@ __script__ = "Multirss cf"
 __author__ = "CF2009,Affini(multirss 1.5)"
 __url__    = "http://github.com/cf2009/multirss/tree/master"
 __git_url__ = "git://github.com/cf2009/multirss.git"
-__date__    = "30-07-2009"
+__date__    = "31-07-2009"
 __version__ = "0.9"
 
 ACTION_EXIT_SCRIPT = ( 9, 10, )
@@ -123,8 +123,7 @@ class GUI(xbmcgui.WindowXML):
 
     def Clean_text(self, data):
         data = self.remove_html_tags(data)
-        data = unescape(data)
-        data = self.decodeEntities(data)
+        data = htmlentitydecode(data)
         data = self.remove_newline(data)
         #data = self.remove_extra_spaces(data)
         return data
@@ -140,54 +139,22 @@ class GUI(xbmcgui.WindowXML):
         p = re.compile(r'<[^<]*?/?>')
         return p.sub(' ', data)
 
-    def decodeEntities(self,data):
-        data = data or ''
-        data = data.replace('&lt;', '<')
-        data = data.replace('&gt;', '>')
-        data = data.replace('&quot;', '"')
-        data = data.replace('&apos;', "'")
-        data = data.replace('&amp;', '&')
-        return data
-
-def unescape(text):
-   """Removes HTML or XML character references 
-      and entities from a text string.
-   @param text The HTML (or XML) source text.
-   @return The plain text, as a Unicode string, if necessary.
-   from Fredrik Lundh
-   2008-01-03: input only unicode characters string.
-   http://effbot.org/zone/re-sub.htm#unescape-html
-   """
-   def fixup(m):
-      text = m.group(0)
-      if text[:2] == "&#":
-         # character reference
-         try:
-            if text[:3] == "&#x":
-               return unichr(int(text[3:-1], 16))
-            else:
-               return unichr(int(text[2:-1]))
-         except ValueError:
-            print "Value Error"
-            pass
-      else:
-         # named entity
-         # reescape the reserved characters.
-         try:
-            if text[1:-1] == "amp":
-               text = "&amp;amp;"
-            elif text[1:-1] == "gt":
-               text = "&amp;gt;"
-            elif text[1:-1] == "lt":
-               text = "&amp;lt;"
-            else:
-               print text[1:-1]
-               text = unichr(htmlentitydefs.name2codepoint[text[1:-1]])
-         except KeyError:
-            print "keyerror"
-            pass
-      return text # leave as is
-   return re.sub("&#?\w+;", fixup, text)
+def htmlentitydecode(s):
+    # code from http://snipplr.com/view.php?codeview&id=15261
+    # First convert alpha entities (such as &eacute;)
+    # (Inspired from http://mail.python.org/pipermail/python-list/2007-June/443813.html)
+    def entity2char(m):
+        entity = m.group(1)
+        if entity in htmlentitydefs.name2codepoint:
+            return unichr(htmlentitydefs.name2codepoint[entity])
+        return u" "  # Unknown entity: We replace with a space.
+    t = re.sub(u'&(%s);' % u'|'.join(htmlentitydefs.name2codepoint), entity2char, s)
+  
+    # Then convert numerical entities (such as &#233;)
+    t = re.sub(u'&#(\d+);', lambda x: unichr(int(x.group(1))), t)
+   
+    # Then convert hexa entities (such as &#x00E9;)
+    return re.sub(u'&#x(\w+);', lambda x: unichr(int(x.group(1),16)), t)
 
 class RSSChannelInfo:
 	def __init__(self, info):
