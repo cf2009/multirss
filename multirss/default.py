@@ -18,6 +18,7 @@ if CWD[-1] != '\\': CWD = CWD + '\\'
 # RSS elements supported by RSSParser class
 channelElements	= ['title','link','description']
 itemElements = ['title','link','description','pubDate']
+itemElements2 = ['title','link','content','updated']
 
 # dialog object for the whole app
 dialog = xbmcgui.DialogProgress()
@@ -95,7 +96,7 @@ class GUI(xbmcgui.WindowXML):
         dialog.close()
 
     def updateGUIElements(self):
-        self.updateRSSChannelTitle()
+        #self.updateRSSChannelTitle()
         self.updateRSSItemList()
         self.updateRSSItemInfo(0)
 
@@ -115,11 +116,16 @@ class GUI(xbmcgui.WindowXML):
         if(items[position].hasElement("description")):
             self.description_clen = self.Clean_text(items[position].getElement("description"))
             self.getControl( CONTROL_RSSITEM_DESC ).setText(self.description_clen)
+        elif(items[position].hasElement("content")): # 2
+            self.description_clen = self.Clean_text(items[position].getElement("content"))
+            self.getControl( CONTROL_RSSITEM_DESC ).setText(self.description_clen)
         else:
             self.getControl( CONTROL_RSSITEM_DESC ).setText("This item has no description.")
         self.getControl( CONTROL_RSSITEM_TITLE ).setLabel(self.remove_extra_spaces(items[position].getElement("title")))
         if(items[position].hasElement("pubDate")):
             self.getControl( CONTROL_RSSITEM_DATE ).setLabel(items[position].getElement("pubDate"))
+        elif(items[position].hasElement("updated")): # 2
+            self.getControl( CONTROL_RSSITEM_DATE ).setLabel(items[position].getElement("updated"))
 
     def Clean_text(self, data):
         data = self.remove_html_tags(data)
@@ -198,6 +204,8 @@ class RSSParser:
 		self.dom = None
 		self.channelInfo = None
 		self.items = {}
+		url = url.replace('&amp;', '&')
+		url = url.replace('&apos;', '=')
 		f = urllib.urlopen(url)
 		xmlDocument = f.read()
 		f.close()
@@ -210,27 +218,40 @@ class RSSParser:
 
 	# parses channel info and returns RSSChannelInfo object containing the info
 	def __parseChannelInfo(self):
-		channel = self.dom.getElementsByTagName("channel")[0]
-		info = {}
-		for channelElement in channelElements:
-			try:
-				info[channelElement] = channel.getElementsByTagName(channelElement)[0].childNodes[0].data
-			except IndexError:
-				pass
-		return RSSChannelInfo(info)
+		if self.dom.getElementsByTagName("channel"):
+			channel = self.dom.getElementsByTagName("channel")[0]
+			info = {}
+			for channelElement in channelElements:
+				try:
+					info[channelElement] = channel.getElementsByTagName(channelElement)[0].childNodes[0].data
+				except IndexError:
+					pass
+			return RSSChannelInfo(info)
 
 	# parses RSS document items and returns an list containing RSSItem objects
 	def __parseItems(self):
-		items = self.dom.getElementsByTagName("item")
-		itemObjects = []
-		for item in items:
-			elements = {}
-			for itemElement in itemElements:
-				try:
-					elements[itemElement] = item.getElementsByTagName(itemElement)[0].childNodes[0].data
-				except IndexError:
-					pass
-			itemObjects.append(RSSItem(elements))
+		if self.dom.getElementsByTagName("item"):
+			items = self.dom.getElementsByTagName("item")
+			itemObjects = []
+			for item in items:
+				elements = {}
+				for itemElement in itemElements:
+					try:
+						elements[itemElement] = item.getElementsByTagName(itemElement)[0].childNodes[0].data
+					except IndexError:
+						pass
+				itemObjects.append(RSSItem(elements))
+		else:
+			items = self.dom.getElementsByTagName("entry")
+			itemObjects = []
+			for item in items:
+				elements = {}
+				for itemElement in itemElements2:
+					try:
+						elements[itemElement] = item.getElementsByTagName(itemElement)[0].childNodes[0].data
+					except IndexError:
+						pass
+				itemObjects.append(RSSItem(elements))
 		return itemObjects
 
 	# returns the channelinfo on this parser
@@ -268,43 +289,46 @@ class RSSFeed:
 		return self.link
 
 class FeedListLoader:
-	def __init__(self, listFile):
-		self.listFile = listFile
-		self.listXML = None
-		self.categoryList = []
-		self.loadList()
-		self.parseList()
+    def __init__(self, listFile):
+        self.listFile = listFile
+        self.listXML = None
+        self.categoryList = []
+        self.loadList()
+        self.parseList()
 
-	def loadList(self):
-		try:
-			f = open(self.listFile)
-		except IOError:
-			pass
-		fl = f.read()
-		f.close()
-		self.listXML = xml.dom.minidom.parseString(fl)
+    def loadList(self):
+        try:
+            f = open(self.listFile)
+        except IOError:
+            pass
+        fl = f.read()
+        f.close()
+        fl = fl.replace('&', '&amp;')
+        fl = fl.replace('=', '&apos;')
+        fl = fl.replace('&apos;"', '="')
+        self.listXML = xml.dom.minidom.parseString(fl)
 
-	def parseList(self):
-		categories = self.listXML.getElementsByTagName('category')
-		for category in categories:
-			feedList = []
-			name = category.attributes [ 'name' ].nodeValue
-			if(category.hasAttribute('background')):
-				background = category.attributes [ 'background' ].nodeValue
-			else:
-				background = 'background.jpg'
-			feeds = category.getElementsByTagName('feed')
-			for feed in feeds:
-				title = feed.childNodes [ 0 ].nodeValue
-				link = feed.attributes [ 'link' ].nodeValue
-				feedList.append(RSSFeed(title, link))
-			self.categoryList.append(RSSCategory(name, feedList, background))
+    def parseList(self):
+        categories = self.listXML.getElementsByTagName('category')
+        for category in categories:
+            feedList = []
+            name = category.attributes [ 'name' ].nodeValue
+            if(category.hasAttribute('background')):
+                background = category.attributes [ 'background' ].nodeValue
+            else:
+                background = 'background.jpg'
+            feeds = category.getElementsByTagName('feed')
+            for feed in feeds:
+                title = feed.childNodes [ 0 ].nodeValue
+                link = feed.attributes [ 'link' ].nodeValue
+                feedList.append(RSSFeed(title, link))
+            self.categoryList.append(RSSCategory(name, feedList, background))
 
-	def getCategoryList(self):
-		return self.categoryList
+    def getCategoryList(self):
+        return self.categoryList
 
 def sort_feeds(first, second):
-	return cmp(first.getTitle(), second.getTitle())
+    return cmp(first.getTitle(), second.getTitle())
 
 if ( __name__ == "__main__" ):
     ui = GUI( "script-XBMC_MULTIRSS-main.xml", os.getcwd(), "Default" )
