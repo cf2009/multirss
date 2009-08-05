@@ -11,10 +11,133 @@
 		<texture background="true" fallback="background.jpg" />
 		<animation effect="fade" start="0" end="100" time="500">WindowOpen</animation>
 		<animation effect="fade" start="100" end="0" time="200">WindowClose</animation>
+		<visible>!Skin.HasSetting(bg-MULTIRSS)</visible>
 	</control>
-
+	<control type="multiimage">
+		<posx>0</posx>
+		<posy>0</posy>
+		<width>1280</width>
+		<height>720</height>
+		<timeperimage>20000</timeperimage>
+		<randomize>true</randomize>
+		<fadetime>1000</fadetime>
+		<imagepath background="true">$INFO[Skin.String(bg-MULTIRSS-s)]</imagepath>
+		<visible>Skin.HasSetting(bg-MULTIRSS)</visible>
+	</control>
+<!-- settings LIST -->
 	<control type="group">
-		<animation effect="slide" start="0,0" end="40,0" time="300" tween="cubic" easing="inout" condition="Control.HasFocus(5052)|Control.HasFocus(5053)">Conditional</animation>
+		<animation effect="slide" start="0,0" end="390,0" time="400" tween="cubic" easing="inout" condition="Control.HasFocus(4050)">Conditional</animation>
+		<animation effect="fade" start="0" end="100" time="500">WindowOpen</animation>
+		<animation effect="fade" start="100" end="0" time="200">WindowClose</animation>
+		<posx>-350</posx>
+		<control type="image">
+			<description>background image</description>
+			<posx>0</posx>
+			<posy>60</posy>
+			<width>260</width>
+			<height>590</height>
+			<texture border="40">textbox1.png</texture>
+		</control>
+	<!-- 4050 -->
+		<control type="list" id="4050">
+			<posx>20</posx>
+			<posy>90</posy>
+			<width>220</width>
+			<height>490</height>
+			<onleft>5052</onleft>
+			<onright>5051</onright>
+			<onup>4050</onup>
+			<ondown>4050</ondown>
+			<pagecontrol>25</pagecontrol>
+			<orientation>vertical</orientation>
+			<scrolltime>200</scrolltime>
+			<itemgap>0</itemgap>
+			<itemlayout height="30" width="220">
+				<control type="label">
+					<posx>10</posx>
+					<posy>5</posy>
+					<width>200</width>
+					<height>20</height>
+					<font>Font_ListObjects</font>
+					<align>left</align>
+					<aligny>center</aligny>
+					<info>ListItem.Label</info>
+					<textcolor>68000000</textcolor>
+				</control>
+				<control type="image">
+					<posx>5</posx>
+					<posy>30</posy>
+					<width>210</width>
+					<height>1</height>
+					<texture>line_1.png</texture>
+				</control>
+			</itemlayout>
+			<focusedlayout height="30" width="220">
+				<control type="label">
+					<posy>5</posy>
+					<posx>10</posx>
+					<height>20</height>
+					<width>200</width>
+					<aligny>center</aligny>
+					<font>Font_ListObjects</font>
+					<textcolor>68000000</textcolor>
+					<info>ListItem.Label</info>
+					<animation effect="fade" start="100" end="0" time="200">Focus</animation>
+					<animation effect="fade" start="0" end="100" time="200">Unfocus</animation>
+				</control>
+				<control type="label">
+					<posy>5</posy>
+					<posx>10</posx>
+					<height>20</height>
+					<width>200</width>
+					<aligny>center</aligny>
+					<font>Font_ListObjects</font>
+					<textcolor>ff000000</textcolor>
+					<info>ListItem.Label</info>
+					<animation effect="fade" start="0" end="100" time="200">Focus</animation>
+					<animation effect="fade" start="100" end="0" time="200">Unfocus</animation>
+				</control>
+				<control type="label">
+					<visible>!control.HasFocus(5052)</visible>
+					<posy>5</posy>
+					<posx>10</posx>
+					<height>20</height>
+					<width>200</width>
+					<aligny>center</aligny>
+					<font>Font_ListObjects</font>
+					<textcolor>44000000</textcolor>
+					<info>ListItem.Label</info>
+					<animation effect="fade" start="100" end="0" time="200">Visible</animation>
+					<animation effect="fade" start="0" end="100" time="200">Hidden</animation>
+				</control>
+				<control type="image">
+					<posx>5</posx>
+					<posy>30</posy>
+					<width>210</width>
+					<height>1</height>
+					<texture>line_1.png</texture>
+				</control>
+			</focusedlayout>
+			<content>
+					<!-- Temp Background Button -->
+					<item id="1">
+						<label>background slideshow</label>
+						<onclick>Skin.ToggleSetting(bg-MULTIRSS)</onclick>
+						<onclick>Skin.SetPath(bg-MULTIRSS-s)</onclick>
+						<visible>!Skin.HasSetting(bg-MULTIRSS)</visible>
+					</item>
+					<item id="1">
+						<label>Reset background</label>
+						<onclick>Skin.Reset(bg-MULTIRSS)</onclick>
+						<onclick>Skin.Reset(bg-MULTIRSS-s)</onclick>
+						<visible>Skin.HasSetting(bg-MULTIRSS)</visible>
+					</item>
+			</content>
+		</control>
+	</control>
+		
+	<control type="group">
+		<animation effect="slide" start="0,0" end="40,0" time="300" tween="cubic" easing="inout" condition="Control.HasFocus(5052)|Control.HasFocus(5053)|Control.HasFocus(54050)">Conditional</animation>
 		<animation effect="slide" start="0,0" end="0,-30" time="300" tween="cubic" easing="inout" condition="Control.HasFocus(61)">Conditional</animation>
 		<animation effect="fade" start="0" end="100" time="500">WindowOpen</animation>
 		<animation effect="fade" start="100" end="0" time="200">WindowClose</animation>
@@ -287,11 +410,39 @@
 			<label>FEEDS</label>
 		</control>
 	</control>
+<!-- SETTING -->
+	<control type="group">
+		<visible>control.HasFocus(4050)</visible>
+		<posx>68</posx>
+		<posy>0</posy>
+		<animation effect="fade" start="0" end="100" time="200">Visible</animation>
+		<animation effect="fade" start="100" end="0" time="200">Hidden</animation>
+		<animation effect="fade" start="0" end="100" time="500">WindowOpen</animation>
+		<animation effect="fade" start="100" end="0" time="200">WindowClose</animation>
+		<control type="image">
+			<width>305</width>
+			<height>35</height>
+			<texture>button_nf.png</texture>
+		</control>
+		<control type="label">
+			<posx>10</posx>
+			<posy>2</posy>
+			<height>20</height>
+			<width>285</width>
+			<aligny>center</aligny>
+			<align>center</align>
+			<font>Font_WeatherLabel</font>
+			<textcolor>aa000000</textcolor>
+			<label>SETTINGS</label>
+		</control>
+	</control>
 <!-- FEED LIST -->
 	<control type="group">
 		<animation effect="slide" start="0,0" end="390,0" time="400" tween="cubic" easing="inout" condition="Control.HasFocus(5052)">Conditional</animation>
 		<animation effect="fade" start="0" end="100" time="500">WindowOpen</animation>
 		<animation effect="fade" start="100" end="0" time="200">WindowClose</animation>
+		<animation effect="fade" start="0" end="100" time="200">Visible</animation>
+		<animation effect="fade" start="100" end="0" time="200">Hidden</animation>
 		<posx>-300</posx>
 		<control type="image">
 			<description>background image</description>
@@ -482,7 +633,7 @@
 <!-- FEEDS -->
 	<control type="group">
 		<posx>0</posx>
-		<posy>195</posy>
+		<posy>140</posy>
 		<animation effect="slide" start="0,0" end="-390,0" time="400" tween="cubic" easing="inout" condition="Control.HasFocus(5052)">Conditional</animation>
 		<animation effect="fade" start="0" end="100" time="500">WindowOpen</animation>
 		<animation effect="fade" start="100" end="0" time="200">WindowClose</animation>
@@ -507,7 +658,7 @@
 <!-- Category -->
 	<control type="group">
 		<posx>0</posx>
-		<posy>365</posy>
+		<posy>300</posy>
 		<animation effect="slide" start="0,0" end="-390,0" time="400" tween="cubic" easing="inout" condition="Control.HasFocus(5053)">Conditional</animation>
 		<animation effect="fade" start="0" end="100" time="500">WindowOpen</animation>
 		<animation effect="fade" start="100" end="0" time="200">WindowClose</animation>
@@ -529,11 +680,11 @@
 			<label>CATEGORY</label>
 		</control>
 	</control>
-<!-- Settings 
+<!-- Settings -->
 	<control type="group">
 		<posx>0</posx>
 		<posy>460</posy>
-		<animation effect="slide" start="0,0" end="-390,0" time="400" tween="cubic" easing="inout" condition="Control.HasFocus(5060)">Conditional</animation>
+		<animation effect="slide" start="0,0" end="-390,0" time="400" tween="cubic" easing="inout" condition="Control.HasFocus(4050)">Conditional</animation>
 		<animation effect="fade" start="0" end="100" time="500">WindowOpen</animation>
 		<animation effect="fade" start="100" end="0" time="200">WindowClose</animation>
 		<control type="image">
@@ -548,13 +699,13 @@
 			<width>140</width>
 			<aligny>center</aligny>
 			<align>center</align>
-			<font>font11</font>
+			<font>Font_ListObjects</font>
 			<angle>-90</angle>
 			<textcolor>aa000000</textcolor>
 			<label>SETTINGS</label>
 		</control>
 	</control>
--->
+
 	<control type="label" id="5100">
 		<animation effect="fade" start="100" end="0" time="500">WindowOpen</animation>
 		<animation effect="fade" start="0" end="100" time="200">WindowClose</animation>
