@@ -112,20 +112,23 @@ class GUI(xbmcgui.WindowXML):
         self.setFocus(self.getControl( CONTROL_RSSITEM_LIST ))
         
     def updateRSSItemInfo(self, position):
-        items = self.parser.getItems()
-        if(items[position].hasElement("description")):
-            self.description_clen = self.Clean_text(items[position].getElement("description"))
-            self.getControl( CONTROL_RSSITEM_DESC ).setText(self.description_clen)
-        elif(items[position].hasElement("content")): # 2
-            self.description_clen = self.Clean_text(items[position].getElement("content"))
-            self.getControl( CONTROL_RSSITEM_DESC ).setText(self.description_clen)
-        else:
-            self.getControl( CONTROL_RSSITEM_DESC ).setText("This item has no description.")
-        self.getControl( CONTROL_RSSITEM_TITLE ).setLabel(self.remove_extra_spaces(items[position].getElement("title")))
-        if(items[position].hasElement("pubDate")):
-            self.getControl( CONTROL_RSSITEM_DATE ).setLabel(items[position].getElement("pubDate"))
-        elif(items[position].hasElement("updated")): # 2
-            self.getControl( CONTROL_RSSITEM_DATE ).setLabel(items[position].getElement("updated"))
+        try:
+            items = self.parser.getItems()
+            if(items[position].hasElement("description")):
+                self.description_clen = self.Clean_text(items[position].getElement("description"))
+                self.getControl( CONTROL_RSSITEM_DESC ).setText(self.description_clen)
+            elif(items[position].hasElement("content")): # 2
+                self.description_clen = self.Clean_text(items[position].getElement("content"))
+                self.getControl( CONTROL_RSSITEM_DESC ).setText(self.description_clen)
+            else:
+                self.getControl( CONTROL_RSSITEM_DESC ).setText("This item has no description.")
+            self.getControl( CONTROL_RSSITEM_TITLE ).setLabel(self.remove_extra_spaces(items[position].getElement("title")))
+            if(items[position].hasElement("pubDate")):
+                self.getControl( CONTROL_RSSITEM_DATE ).setLabel(items[position].getElement("pubDate"))
+            elif(items[position].hasElement("updated")): # 2
+               self.getControl( CONTROL_RSSITEM_DATE ).setLabel(items[position].getElement("updated"))
+        except:
+            pass
 
     def Clean_text(self, data):
         data = self.remove_html_tags(data)
@@ -204,8 +207,8 @@ class RSSParser:
 		self.dom = None
 		self.channelInfo = None
 		self.items = {}
-		url = url.replace('&amp;', '&')
-		url = url.replace('&apos;', '=')
+		url = url.replace('amp;', "&")
+		url = url.replace('apos;', "=")
 		f = urllib.urlopen(url)
 		xmlDocument = f.read()
 		f.close()
@@ -303,9 +306,9 @@ class FeedListLoader:
             pass
         fl = f.read()
         f.close()
-        fl = fl.replace('&', '&amp;')
-        fl = fl.replace('=', '&apos;')
-        fl = fl.replace('&apos;"', '="')
+        fl = fl.replace('&', 'amp;')
+        fl = fl.replace('=', 'apos;')
+        fl = fl.replace('apos;\"', '=\"')
         self.listXML = xml.dom.minidom.parseString(fl)
 
     def parseList(self):
